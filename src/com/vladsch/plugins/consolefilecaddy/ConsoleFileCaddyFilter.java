@@ -68,8 +68,9 @@ public class ConsoleFileCaddyFilter implements Filter, DumbAware {
     final protected static String FILE_PROTOCOL_PREFIX = "file:///";
     public static final String FQN_PREFIX = "fqn://";
     public static final String DIFF_PREFIX = "diff://";
+    private static final String BAZEL_SANDBOX_FILE_PART = ".runfiles/__main__/";
 
-    final protected static String ANCHOR_SUFFIX = "(?:(?:[#:(\\[]\\s?L?(\\d+)[^/\\\\\\dL]?(?:L?(\\d+)?[)\\]]?))?)(?:$|[ \\t>)]|:])";
+    final protected static String ANCHOR_SUFFIX = "(?:(?:[#:(\\[]\\s?L?(\\d+)[^/\\\\\\dL]?(?:L?(\\d+)?[)\\]]?))?)(?:$|[ \\t>)]|:)";
     final protected static String ANCHOR_SUFFIX_DIFF_1 = "(?:(?:[#:(\\[]\\s?L?(\\d+)[^/\\\\\\dL]?(?:L?(\\d+)?[)\\]]?))?)";
     final protected static String ANCHOR_SUFFIX_DIFF_2 = "(?:(?:[#:(\\[]\\s?L?(\\d+)[^/\\\\\\dL]?(?:L?(\\d+)?[)\\]]?))?)(?:[ \\t]*?\\&)";
     final protected static String CLASS_FQN = "(?:fqn://[^ \\t]+?)";
@@ -169,6 +170,9 @@ public class ConsoleFileCaddyFilter implements Filter, DumbAware {
                 if (filePath.startsWith(FILE_PROTOCOL_PREFIX)) fixedFilePath = filePath.substring(FILE_PROTOCOL_PREFIX.length() - leadSlash);
                 else if (filePath.startsWith(FILE_PROTOCOL_PREFIX.substring(0, FILE_PROTOCOL_PREFIX.length() - 1))) fixedFilePath = filePath.substring(FILE_PROTOCOL_PREFIX.length() - 1 - leadSlash);
                 else if (filePath.startsWith(FILE_PROTOCOL_PREFIX.substring(0, FILE_PROTOCOL_PREFIX.length() - 2))) fixedFilePath = filePath.substring(FILE_PROTOCOL_PREFIX.length() - 2 - leadSlash);
+                if (myProject != null && fixedFilePath.contains(BAZEL_SANDBOX_FILE_PART)) {
+                    fixedFilePath = myProject.getBasePath() + "/" + fixedFilePath.split(BAZEL_SANDBOX_FILE_PART)[1];
+                }
                 LOG.debug("Fixed file path: " + fixedFilePath);
 
                 File file = new File(fixedFilePath);
