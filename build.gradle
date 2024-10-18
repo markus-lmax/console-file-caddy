@@ -5,7 +5,7 @@ plugins {
 }
 
 def javaVersion = "11"
-def pluginVersion = "1.1.9"
+def pluginVersion = "1.1.10"
 def pluginSinceBuild = "203"
 def pluginUntilBuild = ""
 

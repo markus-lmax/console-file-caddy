@@ -80,12 +80,12 @@ public class ConsoleFileCaddyFilter implements Filter, DumbAware {
     final protected static String DIFF_SECOND_HIJACK = "[ \\t]*?\\?[ \\t]*?((?:/?\\[)?[^ \\t]+?\\]?)";
 
     final protected static Pattern PATTERN_UNIX = Pattern.compile("(?:^|[ \\t:><|/])"
-                    + "((?:(" + CLASS_FQN + "|(?:file://|/(?:[^ \\t:><|/]+/[^ \\t:><|/])+)[^ \\t]+?)" + ANCHOR_SUFFIX + ")"
+                    + "((?:(" + CLASS_FQN + "|(?:file://|/?(?:[^ \\t:><|/]+/[^ \\t:><|/])+)[^ \\t]+?)" + ANCHOR_SUFFIX + ")"
                     + "|(?:" + CLASS_DIFF + ANCHOR_SUFFIX_DIFF_1 + DIFF_SECOND + ANCHOR_SUFFIX_DIFF_2 + "))"
             , Pattern.MULTILINE);
 
     final protected static Pattern PATTERN_UNIX_HIJACK = Pattern.compile("(?:^|[ \\t:><|/])"
-                    + "((?:(" + CLASS_FQN + "|(?:file://|/(?:[^ \\t:><|/]+/[^ \\t:><|/])+)[^ \\t]+?)" + ANCHOR_SUFFIX + ")"
+                    + "((?:(" + CLASS_FQN + "|(?:file://|/?(?:[^ \\t:><|/]+/[^ \\t:><|/])+)[^ \\t]+?)" + ANCHOR_SUFFIX + ")"
                     + "|(?:" + CLASS_DIFF_HIJACK + ANCHOR_SUFFIX_DIFF_1 + DIFF_SECOND_HIJACK + ANCHOR_SUFFIX_DIFF_2 + "))"
             , Pattern.MULTILINE);
 
@@ -172,6 +172,9 @@ public class ConsoleFileCaddyFilter implements Filter, DumbAware {
                 else if (filePath.startsWith(FILE_PROTOCOL_PREFIX.substring(0, FILE_PROTOCOL_PREFIX.length() - 2))) fixedFilePath = filePath.substring(FILE_PROTOCOL_PREFIX.length() - 2 - leadSlash);
                 if (myProject != null && fixedFilePath.contains(BAZEL_SANDBOX_FILE_PART)) {
                     fixedFilePath = myProject.getBasePath() + "/" + fixedFilePath.split(BAZEL_SANDBOX_FILE_PART)[1];
+                }
+                if (myProject != null && !fixedFilePath.startsWith("/")) {
+                    fixedFilePath = myProject.getBasePath() + "/" + fixedFilePath;
                 }
                 LOG.debug("Fixed file path: " + fixedFilePath);
 

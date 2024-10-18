@@ -18,6 +18,10 @@
 * [ ] Add: Handle fqn with relative path suffix to allow resource refs using query suffix to fqn
       class name. Something like `fqn://...?resourcePath#LineInfo`.
 
+### 1.1.10 - Dev Build
+
+* Change: link relative file paths within project directory
+
 ### 1.1.9 - Dev Build
 
 * Change: link files within a Bazel sandbox to the corresponding project file
